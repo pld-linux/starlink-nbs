@@ -2,7 +2,7 @@ Summary:	NBS - NoticeBoard System
 Summary(pl):	NBS - system powiadamiania
 Name:		starlink-nbs
 Version:	2.5_8.218
-Release:	1
+Release:	2
 License:	GPL
 Group:		Libraries
 Source0:	ftp://ftp.starlink.rl.ac.uk/pub/ussc/store/nbs/nbs.tar.Z
