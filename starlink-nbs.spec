@@ -7,6 +7,7 @@ License:	GPL
 Group:		Libraries
 Source0:	ftp://ftp.starlink.rl.ac.uk/pub/ussc/store/nbs/nbs.tar.Z
 # Source0-md5:	3b3b7b10774d03fca2fb7d4bcdcdbeeb
+Patch0:		%{name}-types.patch
 URL:		http://www.starlink.rl.ac.uk/static_www/soft_further_NBS.html
 BuildRequires:	gcc-g77
 BuildRequires:	sed >= 4.0
@@ -41,7 +42,7 @@ odwo³uj±c siê do danych tablicy poprzez wska¼nik.
 Summary:	Header files for NBS library
 Summary(pl):	Pliki nag³ówkowe biblioteki NBS
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 Requires:	starlink-ems-devel
 
 %description devel
@@ -54,7 +55,7 @@ Pliki nag³ówkowe biblioteki NBS.
 Summary:	Static Starlink NBS library
 Summary(pl):	Statyczna biblioteka Starlink NBS
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static Starlink NBS library.
@@ -64,6 +65,14 @@ Statyczna biblioteka Starlink NBS.
 
 %prep
 %setup -q -c
+
+mkdir tmp
+cd tmp
+tar xf ../nbs_source.tar
+%patch0 -p1
+tar cf ../nbs_source.tar *
+cd ..
+rm -rf tmp
 
 sed -i -e "s/-O'/%{rpmcflags} -fPIC'/" mk
 sed -i -e "s/\\(-L\\\$(STAR_\\)LIB)/\\1SHARE)/;s/-L\\. lib\\\$(PKG_NAME)\\.a/-L. -l\\\$(PKG_NAME)/" makefile
