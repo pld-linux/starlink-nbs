@@ -2,12 +2,11 @@ Summary:	NBS - NoticeBoard System
 Summary(pl):	NBS - system powiadamiania
 Name:		starlink-nbs
 Version:	2.5_8.218
-Release:	2
+Release:	3
 License:	GPL
 Group:		Libraries
 Source0:	ftp://ftp.starlink.rl.ac.uk/pub/ussc/store/nbs/nbs.tar.Z
 # Source0-md5:	3b3b7b10774d03fca2fb7d4bcdcdbeeb
-Patch0:		%{name}-types.patch
 URL:		http://www.starlink.rl.ac.uk/static_www/soft_further_NBS.html
 BuildRequires:	gcc-g77
 BuildRequires:	sed >= 4.0
@@ -15,6 +14,11 @@ BuildRequires:	starlink-chr-devel
 BuildRequires:	starlink-ems-devel
 BuildRequires:	starlink-sae-devel
 Requires:	starlink-sae
+# it would require rewrite to work with pointers larger than int
+# (pointers are used as resource ids, stored in ints)
+# pointers come from two sources and then are used in the same way,
+# so using offsets or cnfCptr()/cnfFptr() won't work
+ExcludeArch:	alpha amd64 ia64 ppc64 s390x sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		stardir		/usr/lib/star
@@ -65,14 +69,6 @@ Statyczna biblioteka Starlink NBS.
 
 %prep
 %setup -q -c
-
-mkdir tmp
-cd tmp
-tar xf ../nbs_source.tar
-%patch0 -p1
-tar cf ../nbs_source.tar *
-cd ..
-rm -rf tmp
 
 sed -i -e "s/-O'/%{rpmcflags} -fPIC'/" mk
 sed -i -e "s/\\(-L\\\$(STAR_\\)LIB)/\\1SHARE)/;s/-L\\. lib\\\$(PKG_NAME)\\.a/-L. -l\\\$(PKG_NAME)/" makefile
