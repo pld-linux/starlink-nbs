@@ -5,8 +5,7 @@ Version:	2.5_8.218
 Release:	1
 License:	GPL
 Group:		Libraries
-#Source0:	ftp://ftp.starlink.rl.ac.uk/pub/ussc/store/nbs/nbs.tar.Z
-Source0:	nbs.tar.Z
+Source0:	ftp://ftp.starlink.rl.ac.uk/pub/ussc/store/nbs/nbs.tar.Z
 # Source0-md5:	3b3b7b10774d03fca2fb7d4bcdcdbeeb
 URL:		http://www.starlink.rl.ac.uk/static_www/soft_further_NBS.html
 BuildRequires:	gcc-g77
