@@ -10,6 +10,7 @@ Source0:	ftp://ftp.starlink.rl.ac.uk/pub/ussc/store/nbs/nbs.tar.Z
 URL:		http://www.starlink.rl.ac.uk/static_www/soft_further_NBS.html
 BuildRequires:	gcc-g77
 BuildRequires:	sed >= 4.0
+BuildRequires:	starlink-chr-devel
 BuildRequires:	starlink-ems-devel
 BuildRequires:	starlink-sae-devel
 Requires:	starlink-sae
