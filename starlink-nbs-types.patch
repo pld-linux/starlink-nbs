@@ -15,3 +15,322 @@
  
  int nbs_gl_item_total;	/* Current total size of Item_descriptor's */
  int nbs_gl_fixed_total;	/* Current total size of Fixed_info's */
+--- starlink-nbs-2.5_8.218/nbs.c.orig	1999-04-27 17:27:16.000000000 +0200
++++ starlink-nbs-2.5_8.218/nbs.c	2004-05-29 23:00:34.221473404 +0200
+@@ -340,7 +340,7 @@
+ #define NBS_GET_CINFO		nbc_get_cinfo
+ 
+ #define NBS_INTIMP(_out,_in)	*(_out) = (_in)
+-#define NBS_PTRIMP(_type,_out,_in) {(_out)=NIL; *((_type *) &_out) = (_in);}
++#define NBS_PTRIMP(_type,_out,_in) (_out) = (void*)((nbs_gl_defining ? nbs_ga_alloc_base : 0) + (unsigned)(_in))
+ 
+ #define NBS_INIT_ALLOC		nbc_init_alloc
+ #define NBS_ALLOC		nbc_alloc
+@@ -415,7 +415,7 @@
+ #define NBS_GET_CINFO		F77_EXTERNAL_NAME(nbs_get_cinfo)
+ 
+ #define NBS_INTIMP(_out,_in)	*(_out) = *(_in)
+-#define NBS_PTRIMP(_type,_out,_in) {(_out)=NIL; *((_type *) &_out) = *(_in);}
++#define NBS_PTRIMP(_type,_out,_in) (_out) = (void*)((nbs_gl_defining ? nbs_ga_alloc_base : 0) + (unsigned)*(_in))
+ 
+ #define NBS_INIT_ALLOC		F77_EXTERNAL_NAME(nbs_init_alloc)
+ #define NBS_ALLOC		F77_EXTERNAL_NAME(nbs_alloc)
+@@ -448,6 +448,7 @@
+ /* Include files	*/
+ 
+ #include <stdio.h>
++#include <string.h>
+ 
+ /* Error codes */
+ 
+@@ -664,7 +664,7 @@
+ 
+ /* External function declarations */
+ 
+-   extern int	strncmp();
++
+ 
+ /* Local variable declarations */
+ 
+@@ -808,7 +808,7 @@
+ 
+ /* External function declarations */
+ 
+-   extern int	strncmp();
++
+ 
+ /* Local variable declarations */
+ 
+@@ -933,7 +933,7 @@
+ *     {enter_changes_here}
+ *-
+ */
+-int NBS_BEGIN_DEFINITION ( item_id *sid, W_INTEGER(status) )
++int NBS_BEGIN_DEFINITION ( W_INTEGER(sid), W_INTEGER(status) )
+ {
+   GENPTR_INTEGER(status)
+ 
+@@ -943,7 +943,7 @@
+    extern char	*NBS_ALLOC();
+    extern char 	*NBS_INIT_ALLOC();
+ 
+-   extern char	*strncpy();
++
+ 
+ /* Local variable declarations */
+ 
+@@ -1129,7 +1129,7 @@
+ *-
+ */
+ int NBS_DEFINE_STRUCTURE ( R_INTEGER(envsid), RW_CHARACTER(name), 
+-                           RW_CHARACTER(type), item_id *sid,
++                           RW_CHARACTER(type), W_INTEGER(sid),
+                            W_INTEGER(status) TRAIL(name) TRAIL(type) )
+ {
+   GENPTR_INTEGER(envsid)
+@@ -1142,8 +1142,8 @@
+ 
+    extern char	*NBS_ALLOC();
+ 
+-   extern int	strncmp();
+-   extern char	*strncpy();
++
++
+ 
+ /* Local variable declarations */
+ 
+@@ -1325,7 +1325,7 @@
+ */
+ int NBS_DEFINE_PRIMITIVE ( R_INTEGER(envsid), RW_CHARACTER(name),
+                            RW_CHARACTER(type), R_INTEGER(maxdims),
+-                           R_INTEGER(maxbytes), item_id *sid,
++                           R_INTEGER(maxbytes), W_INTEGER(sid),
+                            W_INTEGER(status) TRAIL(name) TRAIL(type) )
+ {
+   GENPTR_INTEGER(envsid)
+@@ -1341,8 +1341,8 @@
+    extern char	*NBS_ALLOC();
+    extern char	*NBS_DATA_ALLOC();
+ 
+-   extern int	strncmp();
+-   extern char	*strncpy();
++
++
+ 
+ /* Local variable declarations */
+ 
+@@ -1678,7 +1678,7 @@
+    extern int	*NBS_WRITE_FILE();
+ 
+    extern int	getpid();
+-   extern char	*strncpy();
++
+ 
+ /* Local variable declarations */
+ 
+@@ -1737,8 +1737,8 @@
+    to DATA_BASE but did not accound for the size of the definition - all the
+    data immediately follows the definition in the noticeboard).	*/
+ 
+-      NBS_RELOCATE_POINTERS (nbs_ga_base, (int) nbs_ga_base - ITEM_BASE,
+-				(int) nbs_ga_base - ITEM_BASE, -defn_size, NO);
++      NBS_RELOCATE_POINTERS (nbs_ga_base, (long) nbs_ga_base - ITEM_BASE,
++				(long) nbs_ga_base - ITEM_BASE, (long)-defn_size, NO);
+ 
+ /* If requested, write the definition to the file.	*/
+ 
+@@ -1764,7 +1764,7 @@
+             if ( global_base != ((item_id) -1) ) {
+ 	      bid = global_base->board;
+ 	      bid = (board_id) NBS_RELOCATE_ADDRESS
+-	      			(bid, (int) global_base - ITEM_BASE, YES);
++	      			(bid, (long) global_base - ITEM_BASE, YES);
+ 	      bid->pid = getpid ();
+ 	      bid->world_write = world_write;
+ 	      bid->increment_modify = increment_modify;
+@@ -1932,7 +1932,7 @@
+                  ( global_base != ((item_id) -1) ) ) {
+ 	       bid = global_base->board;
+ 	       bid = (board_id) NBS_RELOCATE_ADDRESS
+-	      			(bid, (int) global_base - ITEM_BASE, YES);
++	      			(bid, (long) global_base - ITEM_BASE, YES);
+ 	       bid->pid = getpid ();
+ 	       bid->world_write = world_write;
+ 	       bid->increment_modify = increment_modify;
+@@ -2088,7 +2088,7 @@
+               ( global_base != ((item_id) -1) ) ) {
+ 	    bid = global_base->board;
+ 	    bid = (board_id) NBS_RELOCATE_ADDRESS
+-				(bid, (int) global_base - ITEM_BASE, YES);
++				(bid, (long) global_base - ITEM_BASE, YES);
+ 	    bid->pid = getpid ();
+ 	    bid->world_write = world_write;
+ 	    bid->increment_modify = increment_modify;
+@@ -2340,7 +2340,7 @@
+ *     {enter_changes_here}
+ *-
+ */
+-int NBS_FIND_NOTICEBOARD ( RW_CHARACTER(name), item_id *id,
++int NBS_FIND_NOTICEBOARD ( RW_CHARACTER(name), W_INTEGER(id),
+                            W_INTEGER(status) TRAIL(name) )
+ {
+   GENPTR_CHARACTER(name)
+@@ -2403,9 +2403,9 @@
+                }
+ 	    else {
+ 	       *locid = *global_base;
+-	       NBS_RELOCATE_ITEM (locid,(int) global_base - ITEM_BASE,
+-				      (int) global_base - ITEM_BASE,
+-	    		     	      (int) global_base - DATA_BASE, YES);
++	       NBS_RELOCATE_ITEM (locid,(long) global_base - ITEM_BASE,
++				      (long) global_base - ITEM_BASE,
++	    		     	      (long) global_base - DATA_BASE, YES);
+ 
+ /* Check that the version number held in the noticeboard (which is the version
+    of the software that created the noticeboard) matches the software version.*/
+@@ -2441,9 +2441,9 @@
+ 
+ 	          else {
+ 		     _chmove (defn_size,(char *) global_base,(char *) locid);
+-		     NBS_RELOCATE_POINTERS (locid,(int) locid -ITEM_BASE,
+-					        (int)global_base-ITEM_BASE,
+-				    	        (int)global_base-DATA_BASE,YES);
++		     NBS_RELOCATE_POINTERS (locid,(long) locid -ITEM_BASE,
++					        (long)global_base-ITEM_BASE,
++				    	        (long)global_base-DATA_BASE,YES);
+ 
+ /* The noticeboard VALID flag (which is in union with the PARENT pointer) will
+    have been relocated. Explicitly set it to NIL - in the private copy it is
+@@ -2559,7 +2559,7 @@
+ *     {enter_changes_here}
+ *-
+ */
+-int NBS_FIND_ITEM ( R_INTEGER(envid), RW_CHARACTER(name), item_id *id,
++int NBS_FIND_ITEM ( R_INTEGER(envid), RW_CHARACTER(name), W_INTEGER(id),
+                     W_INTEGER(status) TRAIL(name) )
+ {
+   GENPTR_INTEGER(envid)
+@@ -2569,7 +2569,7 @@
+ 
+ /* External function declarations */
+ 
+-   extern int	strncmp();
++
+ 
+ /* Local variable declarations */
+ 
+@@ -2700,7 +2700,7 @@
+ *-
+ */
+ int NBS_FIND_NTH_ITEM ( R_INTEGER(envid), R_INTEGER(posn),
+-                        item_id *id, W_INTEGER(status) )
++                        W_INTEGER(id), W_INTEGER(status) )
+ {
+   GENPTR_INTEGER(envid)
+   GENPTR_INTEGER(posn)
+@@ -4998,7 +4998,7 @@
+ *     {enter_changes_here}
+ *-
+ */
+-int NBS_GET_PARENT ( R_INTEGER(id), item_id *envid, W_INTEGER(status) )
++int NBS_GET_PARENT ( R_INTEGER(id), W_INTEGER(envid), W_INTEGER(status) )
+ {
+   GENPTR_INTEGER(id)
+   GENPTR_INTEGER(status)
+@@ -5006,6 +5006,7 @@
+ /* Local variable declarations */
+ 
+    item_id	tid;
++   item_id	retid;
+ 
+ /* Start of code */
+ 
+@@ -5019,7 +5020,7 @@
+ 
+ /* Ensure that a NIL value will be returned for the ID if the routine fails. */
+ 
+-      *envid = NIL;
++      retid = NIL;
+ 
+ /* Check that the item ID is not NIL.	*/
+ 
+@@ -5032,8 +5033,9 @@
+ /* Return the ID of the item's parent.	*/
+ 
+       else
+-         *envid = tid->vp.parent;
++         retid = tid->vp.parent;
+    }
++   EXPORT_POINTER(retid, envid)
+    return (*status);
+ }
+ 
+--- starlink-nbs-2.5_8.218/nbs_mac.h.orig	1995-09-26 13:48:57.000000000 +0100
++++ starlink-nbs-2.5_8.218/nbs_mac.h	2004-05-29 22:53:51.014416753 +0200
+@@ -146,7 +146,7 @@
+ #define _add_interlocked(dptr) (*(dptr))++
+ #endif
+ 
+-
++extern char* nbs_ga_alloc_base;
+ /* Argument declaration macros. R_ stands for input, W_ for output */
+ 
+ #ifdef c_string
+@@ -169,7 +169,7 @@
+ #define CF_C_ARG(x)     x
+ #define CF_TRAIL(x)     
+ 
+-#define EXPORT_POINTER(sptr,dptr_addr) (*(dptr_addr)) = (sptr);
++#define EXPORT_POINTER(sptr,dptr_addr) (*(dptr_addr)) = (unsigned int)(((char*)sptr) - (nbs_gl_defining ? nbs_ga_alloc_base : 0));
+ 
+ #else
+ 
+@@ -184,7 +184,7 @@
+ #define CF_TRAIL(x)     TRAIL_ARG(x)
+ 
+ #define EXPORT_POINTER(sptr,dptr_addr) \
+-{F77_POINTER_TYPE _pnt = (F77_POINTER_TYPE) sptr; \
++{F77_POINTER_TYPE _pnt = (F77_POINTER_TYPE) (((char*)sptr) - (nbs_gl_defining ? nbs_ga_alloc_base : 0)); \
+ *((F77_POINTER_TYPE *) dptr_addr) = _pnt;}
+ 
+ #endif
+--- starlink-nbs-2.5_8.218/nbslow.c.orig	2004-05-29 23:58:06.000000000 +0200
++++ starlink-nbs-2.5_8.218/nbslow.c	2004-05-30 00:49:58.683597586 +0200
+@@ -1758,8 +1758,8 @@
+ *     {enter_changes_here}
+ *-
+ */
+-NBS_RELOCATE_POINTERS (item_id id,int i_offset,int fbs_offset,
+-                       int d_offset,int add)
++NBS_RELOCATE_POINTERS (item_id id,long i_offset,long fbs_offset,
++                       long d_offset,int add)
+ {
+ 
+ /* External function declarations   */
+@@ -1842,7 +1842,7 @@
+ *     {enter_changes_here}
+ *-
+ */
+-NBS_RELOCATE_ITEM (item_id id,int i_offset,int fbs_offset,int d_offset,int add)
++NBS_RELOCATE_ITEM (item_id id,long i_offset,long fbs_offset,long d_offset,int add)
+ {
+ 
+ /* External function declarations   */
+@@ -1917,7 +1917,7 @@
+ *     {enter_changes_here}
+ *-
+ */
+-char *NBS_RELOCATE_ADDRESS (char *address,int offset,int add)
++char *NBS_RELOCATE_ADDRESS (char *address,long offset,int add)
+ {
+ 
+ /* Start of code */
+@@ -1931,7 +1931,7 @@
+    return the offset address. Otherwise return the unaltered input address. */
+ 
+    if (address != NIL && ((address + offset) != NIL))
+-      return ((char *) ((int) address + offset));
++      return (address + offset);
+    else
+       return (address);
+ }
