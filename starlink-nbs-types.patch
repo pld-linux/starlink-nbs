@@ -1,0 +1,17 @@
+--- starlink-nbs-2.5_8.218/nbs_gbl.c.orig	1995-09-26 12:48:57.000000000 +0000
++++ starlink-nbs-2.5_8.218/nbs_gbl.c	2004-05-29 19:50:24.000000000 +0000
+@@ -7,10 +7,10 @@
+ item_id nbs_ga_base; /* Pointer to base of noticeboard currently being
+                                defined */
+ 
+-int nbs_ga_alloc_next;
+-int nbs_ga_alloc_base;
+-int nbs_ga_alloc_last;
+-int nbs_ga_alloc_data;
++char *nbs_ga_alloc_next;
++char *nbs_ga_alloc_base;
++char *nbs_ga_alloc_last;
++char *nbs_ga_alloc_data;
+ 
+ int nbs_gl_item_total;	/* Current total size of Item_descriptor's */
+ int nbs_gl_fixed_total;	/* Current total size of Fixed_info's */
