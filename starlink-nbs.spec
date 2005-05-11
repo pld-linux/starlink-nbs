@@ -9,6 +9,7 @@ Source0:	ftp://ftp.starlink.rl.ac.uk/pub/ussc/store/nbs/nbs.tar.Z
 # Source0-md5:	3b3b7b10774d03fca2fb7d4bcdcdbeeb
 URL:		http://www.starlink.rl.ac.uk/static_www/soft_further_NBS.html
 BuildRequires:	gcc-g77
+BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	sed >= 4.0
 BuildRequires:	starlink-chr-devel
 BuildRequires:	starlink-ems-devel
@@ -18,7 +19,7 @@ Requires:	starlink-sae
 # (pointers are used as resource ids, stored in ints)
 # pointers come from two sources and then are used in the same way,
 # so using offsets or cnfCptr()/cnfFptr() won't work
-ExcludeArch:	alpha amd64 ia64 ppc64 s390x sparc64
+ExcludeArch:	%{x8664} alpha ia64 ppc64 s390x sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		stardir		/usr/lib/star
