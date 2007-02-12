@@ -1,5 +1,5 @@
 Summary:	NBS - NoticeBoard System
-Summary(pl.UTF-8):   NBS - system powiadamiania
+Summary(pl.UTF-8):	NBS - system powiadamiania
 Name:		starlink-nbs
 Version:	2.5_8.218
 Release:	3
@@ -45,7 +45,7 @@ odwołując się do danych tablicy poprzez wskaźnik.
 
 %package devel
 Summary:	Header files for NBS library
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki NBS
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki NBS
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	starlink-ems-devel
@@ -58,7 +58,7 @@ Pliki nagłówkowe biblioteki NBS.
 
 %package static
 Summary:	Static Starlink NBS library
-Summary(pl.UTF-8):   Statyczna biblioteka Starlink NBS
+Summary(pl.UTF-8):	Statyczna biblioteka Starlink NBS
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
