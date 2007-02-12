@@ -1,5 +1,5 @@
 Summary:	NBS - NoticeBoard System
-Summary(pl):	NBS - system powiadamiania
+Summary(pl.UTF-8):   NBS - system powiadamiania
 Name:		starlink-nbs
 Version:	2.5_8.218
 Release:	3
@@ -33,19 +33,19 @@ its owner but other processes that know what they are doing can
 subvert this rule either by calling a special routine or else by
 accessing noticeboard data by using a pointer.
 
-%description -l pl
-Funkcje systemu powiadamiania (NBS - NoticeBoard System) udostêpniaj±
-szybki sposób na dzielenie danych miêdzy procesami w globalnej
-pamiêci. Dany proces mo¿e u¿ywaæ tyle tablic powiadomieñ, ile tylko
-zechce oraz mo¿e odwo³ywaæ siê do tablic nale¿±cych do innych
-procesów. Zwykle tylko jeden proces, który jako wy³±czny zapisuje do
-tablicy, jest jej w³a¶cicielem, ale inne procesy, wiedz±c z czym to
-siê wi±¿e, mog± obaliæ tê zasadê wywo³uj±c specjaln± funkcjê lub
-odwo³uj±c siê do danych tablicy poprzez wska¼nik.
+%description -l pl.UTF-8
+Funkcje systemu powiadamiania (NBS - NoticeBoard System) udostÄ™pniajÄ…
+szybki sposÃ³b na dzielenie danych miÄ™dzy procesami w globalnej
+pamiÄ™ci. Dany proces moÅ¼e uÅ¼ywaÄ‡ tyle tablic powiadomieÅ„, ile tylko
+zechce oraz moÅ¼e odwoÅ‚ywaÄ‡ siÄ™ do tablic naleÅ¼Ä…cych do innych
+procesÃ³w. Zwykle tylko jeden proces, ktÃ³ry jako wyÅ‚Ä…czny zapisuje do
+tablicy, jest jej wÅ‚aÅ›cicielem, ale inne procesy, wiedzÄ…c z czym to
+siÄ™ wiÄ…Å¼e, mogÄ… obaliÄ‡ tÄ™ zasadÄ™ wywoÅ‚ujÄ…c specjalnÄ… funkcjÄ™ lub
+odwoÅ‚ujÄ…c siÄ™ do danych tablicy poprzez wskaÅºnik.
 
 %package devel
 Summary:	Header files for NBS library
-Summary(pl):	Pliki nag³ówkowe biblioteki NBS
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe biblioteki NBS
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	starlink-ems-devel
@@ -53,19 +53,19 @@ Requires:	starlink-ems-devel
 %description devel
 Header files for NBS library.
 
-%description devel -l pl
-Pliki nag³ówkowe biblioteki NBS.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe biblioteki NBS.
 
 %package static
 Summary:	Static Starlink NBS library
-Summary(pl):	Statyczna biblioteka Starlink NBS
+Summary(pl.UTF-8):   Statyczna biblioteka Starlink NBS
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static Starlink NBS library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka Starlink NBS.
 
 %prep
